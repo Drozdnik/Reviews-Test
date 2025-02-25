@@ -30,18 +30,28 @@ final class ReviewsViewController: UIViewController {
 // MARK: - Private
 
 private extension ReviewsViewController {
-
+    
     func makeReviewsView() -> ReviewsView {
         let reviewsView = ReviewsView()
         reviewsView.tableView.delegate = viewModel
         reviewsView.tableView.dataSource = viewModel
         return reviewsView
     }
-
+    
     func setupViewModel() {
-        viewModel.onStateChange = { [weak reviewsView] _ in
-            reviewsView?.tableView.reloadData() // PerformBatchUpdates
+        viewModel.onStateChange = { [weak self] state, change in
+            guard let self else { return }
+
+            let tableView = reviewsView.tableView
+            
+            switch change {
+            case .insertRows(let indexPaths):
+                tableView.performBatchUpdates {
+                    tableView.insertRows(at: indexPaths, with: .automatic)
+                }
+            case .reloadRow(let indexPath):
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
         }
     }
-
 }
