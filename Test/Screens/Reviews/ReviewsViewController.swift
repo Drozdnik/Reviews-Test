@@ -22,9 +22,10 @@ final class ReviewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewModel()
-        viewModel.getReviews()
+        Task {
+           await viewModel.getReviews()
+        }
     }
-
 }
 
 // MARK: - Private
