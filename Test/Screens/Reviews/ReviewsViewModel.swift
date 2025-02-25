@@ -86,9 +86,13 @@ private extension ReviewsViewModel {
     func makeReviewItem(_ review: Review) -> ReviewItem {
         let reviewText = review.text.attributed(font: .text)
         let created = review.created.attributed(font: .created, color: .created)
+        let username = review.username.attributed(font: .username)
+        let ratingImage = ratingRenderer.ratingImage(review.rating)
         let item = ReviewItem(
+            username: username,
             reviewText: reviewText,
             created: created,
+            ratingImage: ratingImage,
             onTapShowMore: showMoreReview
         )
         return item
