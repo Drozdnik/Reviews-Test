@@ -16,7 +16,7 @@ struct ReviewCellConfig {
     /// Время создания отзыва.
     let created: NSAttributedString
     let ratingImage: UIImage
-    let avatarImage = UIImage(systemName: "person.circle.fill")
+    let avatarImage: UIImage
     /// Замыкание, вызываемое при нажатии на кнопку "Показать полностью...".
     let onTapShowMore: (UUID) -> Void
 
@@ -130,7 +130,8 @@ private extension ReviewCell {
     func setupAvatarImageView() {
         contentView.addSubview(avatarImageView)
         avatarImageView.contentMode = .scaleAspectFit
-        avatarImageView.tintColor = .systemGray
+        avatarImageView.layer.cornerRadius = ReviewCellLayout.avatarCornerRadius
+        avatarImageView.clipsToBounds = true
     }
 
     func setupRatingImageView() {
