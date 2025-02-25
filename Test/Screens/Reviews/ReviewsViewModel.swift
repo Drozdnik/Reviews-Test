@@ -88,11 +88,13 @@ private extension ReviewsViewModel {
         let created = review.created.attributed(font: .created, color: .created)
         let username = review.username.attributed(font: .username)
         let ratingImage = ratingRenderer.ratingImage(review.rating)
+        let avatarImage = UIImage(named: avatarImageName) ?? UIImage(systemName: mockAvatarImageName)!
         let item = ReviewItem(
             username: username,
             reviewText: reviewText,
             created: created,
             ratingImage: ratingImage,
+            avatarImage: avatarImage,
             onTapShowMore: showMoreReview
         )
         return item
@@ -149,5 +151,7 @@ extension ReviewsViewModel: UITableViewDelegate {
         let remainingDistance = contentHeight - viewHeight - targetOffsetY
         return remainingDistance <= triggerDistance
     }
-
 }
+
+private let avatarImageName = "mockAvatar"
+private let mockAvatarImageName = "person.circle.fill"
