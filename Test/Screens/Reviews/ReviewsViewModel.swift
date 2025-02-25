@@ -57,6 +57,7 @@ private extension ReviewsViewModel {
                 let newItems: [ReviewCellConfig]
                 let newIndexPaths: [IndexPath]
                 let start = state.items.count
+                let totalReviewsCount: Int
 
                 do {
                     let data = try result.get()
@@ -65,7 +66,7 @@ private extension ReviewsViewModel {
                     newItems = reviews.items.map(makeReviewItem)
                     newIndexPaths = (start..<start + newItems.count)
                         .map{ IndexPath(row: $0, section: 0)}
-
+                    totalReviewsCount = reviews.count
                 } catch {
                     state.shouldLoad = true
                     return
@@ -76,7 +77,7 @@ private extension ReviewsViewModel {
 
                     state.items.append(contentsOf: newItems)
                     state.offset += state.limit
-                    state.shouldLoad = state.offset < state.items.count
+                    state.shouldLoad = state.offset < totalReviewsCount
                     onStateChange?(state, .insertRows(newIndexPaths))
                 }
             }
