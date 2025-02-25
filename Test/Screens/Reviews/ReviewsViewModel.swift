@@ -36,10 +36,25 @@ extension ReviewsViewModel {
     typealias State = ReviewsViewModelState
 
     /// Метод получения отзывов.
-    func getReviews() {
+    func getReviews() async {
         guard state.shouldLoad else { return }
         state.shouldLoad = false
-        reviewsProvider.getReviews(offset: state.offset, completion: gotReviews)
+        do {
+            let data = try await reviewsProvider.getReviews(offset: state.offset)
+            let reviews = try decoder.decode(Reviews.self, from: data)
+            let start = state.items.count
+            state.items += reviews.items.map(makeReviewItem)
+            state.offset += state.limit
+            state.shouldLoad = state.offset < reviews.count
+
+            let newIndexPaths = (start..<state.items.count).map { IndexPath(row: $0, section: 0) }
+            await MainActor.run {
+                onStateChange?(state, .insertRows(newIndexPaths))
+            }
+        }
+        catch {
+            state.shouldLoad = true
+        }
     }
 
 }
@@ -47,41 +62,6 @@ extension ReviewsViewModel {
 // MARK: - Private
 
 private extension ReviewsViewModel {
-
-    /// Метод обработки получения отзывов.
-    func gotReviews(_ result: ReviewsProvider.GetReviewsResult) {
-        DispatchQueue.global(qos: .userInitiated)
-            .async { [weak self] in
-                guard let self else { return }
-
-                let newItems: [ReviewCellConfig]
-                let newIndexPaths: [IndexPath]
-                let start = state.items.count
-                let totalReviewsCount: Int
-
-                do {
-                    let data = try result.get()
-                    let reviews = try decoder.decode(Reviews.self, from: data)
-
-                    newItems = reviews.items.map(makeReviewItem)
-                    newIndexPaths = (start..<start + newItems.count)
-                        .map{ IndexPath(row: $0, section: 0)}
-                    totalReviewsCount = reviews.count
-                } catch {
-                    state.shouldLoad = true
-                    return
-                }
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-
-                    state.items.append(contentsOf: newItems)
-                    state.offset += state.limit
-                    state.shouldLoad = state.offset < totalReviewsCount
-                    onStateChange?(state, .insertRows(newIndexPaths))
-                }
-            }
-    }
 
     /// Метод, вызываемый при нажатии на кнопку "Показать полностью...".
     /// Снимает ограничение на количество строк текста отзыва (раскрывает текст).
@@ -148,7 +128,9 @@ extension ReviewsViewModel: UITableViewDelegate {
         targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
         if shouldLoadNextPage(scrollView: scrollView, targetOffsetY: targetContentOffset.pointee.y) {
-            getReviews()
+            Task {
+               await getReviews()
+            }
         }
     }
 
