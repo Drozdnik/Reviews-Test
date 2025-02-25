@@ -1,10 +1,14 @@
 import UIKit
 
+enum CellUpdateType {
+    case insertRows([IndexPath])
+    case reloadRow(IndexPath)
+}
 /// Класс, описывающий бизнес-логику экрана отзывов.
 final class ReviewsViewModel: NSObject {
 
     /// Замыкание, вызываемое при изменении `state`.
-    var onStateChange: ((State) -> Void)?
+    var onStateChange: ((State, CellUpdateType) -> Void)?
 
     private var state: State
     private let reviewsProvider: ReviewsProvider
@@ -46,16 +50,36 @@ private extension ReviewsViewModel {
 
     /// Метод обработки получения отзывов.
     func gotReviews(_ result: ReviewsProvider.GetReviewsResult) {
-        do {
-            let data = try result.get()
-            let reviews = try decoder.decode(Reviews.self, from: data)
-            state.items += reviews.items.map(makeReviewItem)
-            state.offset += state.limit
-            state.shouldLoad = state.offset < reviews.count
-        } catch {
-            state.shouldLoad = true
-        }
-        onStateChange?(state)
+        DispatchQueue.global(qos: .userInitiated)
+            .async { [weak self] in
+                guard let self else { return }
+
+                let newItems: [ReviewCellConfig]
+                let newIndexPaths: [IndexPath]
+                let start = state.items.count
+
+                do {
+                    let data = try result.get()
+                    let reviews = try decoder.decode(Reviews.self, from: data)
+
+                    newItems = reviews.items.map(makeReviewItem)
+                    newIndexPaths = (start..<start + newItems.count)
+                        .map{ IndexPath(row: $0, section: 0)}
+
+                } catch {
+                    state.shouldLoad = true
+                    return
+                }
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+
+                    state.items.append(contentsOf: newItems)
+                    state.offset += state.limit
+                    state.shouldLoad = state.offset < state.items.count
+                    onStateChange?(state, .insertRows(newIndexPaths))
+                }
+            }
     }
 
     /// Метод, вызываемый при нажатии на кнопку "Показать полностью...".
@@ -67,7 +91,7 @@ private extension ReviewsViewModel {
         else { return }
         item.maxLines = .zero
         state.items[index] = item
-        onStateChange?(state)
+        //TODO: показать полностью
     }
 
 }
