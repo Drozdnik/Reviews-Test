@@ -8,14 +8,20 @@ struct ReviewCellConfig {
 
     /// Идентификатор конфигурации. Можно использовать для поиска конфигурации в массиве.
     let id = UUID()
+    let username: NSAttributedString
     /// Текст отзыва.
     let reviewText: NSAttributedString
     /// Максимальное отображаемое количество строк текста. По умолчанию 3.
     var maxLines = 3
     /// Время создания отзыва.
     let created: NSAttributedString
+    let ratingImage: UIImage
+    let avatarImage = UIImage(systemName: "person.circle.fill")
     /// Замыкание, вызываемое при нажатии на кнопку "Показать полностью...".
     let onTapShowMore: (UUID) -> Void
+
+
+
 
     /// Объект, хранящий посчитанные фреймы для ячейки отзыва.
     fileprivate let layout = ReviewCellLayout()
@@ -30,6 +36,10 @@ extension ReviewCellConfig: TableCellConfig {
     /// Вызывается из `cellForRowAt:` у `dataSource` таблицы.
     func update(cell: UITableViewCell) {
         guard let cell = cell as? ReviewCell else { return }
+
+        cell.avatarImageView.image = avatarImage
+        cell.ratingImageView.image = ratingImage
+        cell.usernameLabel.attributedText = username
         cell.reviewTextLabel.attributedText = reviewText
         cell.reviewTextLabel.numberOfLines = maxLines
         cell.createdLabel.attributedText = created
@@ -63,6 +73,9 @@ final class ReviewCell: UITableViewCell {
     fileprivate let reviewTextLabel = UILabel()
     fileprivate let createdLabel = UILabel()
     fileprivate let showMoreButton = UIButton()
+    fileprivate let avatarImageView = UIImageView()
+    fileprivate let ratingImageView = UIImageView()
+    fileprivate let usernameLabel = UILabel()
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -76,6 +89,9 @@ final class ReviewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         guard let layout = config?.layout else { return }
+        usernameLabel.frame = layout.usernameFrame
+        avatarImageView.frame = layout.avatarFrame
+        ratingImageView.frame = layout.ratingFrame
         reviewTextLabel.frame = layout.reviewTextLabelFrame
         createdLabel.frame = layout.createdLabelFrame
         showMoreButton.frame = layout.showMoreButtonFrame
@@ -88,9 +104,12 @@ final class ReviewCell: UITableViewCell {
 private extension ReviewCell {
 
     func setupCell() {
+        setupUsername()
         setupReviewTextLabel()
         setupCreatedLabel()
         setupShowMoreButton()
+        setupAvatarImageView()
+        setupRatingImageView()
     }
 
     func setupReviewTextLabel() {
@@ -108,6 +127,20 @@ private extension ReviewCell {
         showMoreButton.setAttributedTitle(Config.showMoreText, for: .normal)
     }
 
+    func setupAvatarImageView() {
+        contentView.addSubview(avatarImageView)
+        avatarImageView.contentMode = .scaleAspectFit
+        avatarImageView.tintColor = .systemGray
+    }
+
+    func setupRatingImageView() {
+        contentView.addSubview(ratingImageView)
+        ratingImageView.contentMode = .scaleAspectFit
+    }
+
+    func setupUsername() {
+        contentView.addSubview(usernameLabel)
+    }
 }
 
 // MARK: - Layout
@@ -130,6 +163,9 @@ private final class ReviewCellLayout {
     private(set) var reviewTextLabelFrame = CGRect.zero
     private(set) var showMoreButtonFrame = CGRect.zero
     private(set) var createdLabelFrame = CGRect.zero
+    private(set) var avatarFrame = CGRect.zero
+    private(set) var ratingFrame = CGRect.zero
+    private(set) var usernameFrame = CGRect.zero
 
     // MARK: - Отступы
 
@@ -157,10 +193,37 @@ private final class ReviewCellLayout {
 
     /// Возвращает высоту ячейку с данной конфигурацией `config` и ограничением по ширине `maxWidth`.
     func height(config: Config, maxWidth: CGFloat) -> CGFloat {
-        let width = maxWidth - insets.left - insets.right
-
+        let avatarContainerFrameStart = CGPoint(x: insets.left, y: insets.top)
+        let reviewContainerStart = avatarContainerFrameStart.x + Self.avatarSize.width + avatarToUsernameSpacing
+        let width = maxWidth - insets.left - insets.right - reviewContainerStart
+        let reviewContainerFrameStart = CGPoint(
+            x: avatarContainerFrameStart.x + Self.avatarSize.width + avatarToUsernameSpacing,
+            y: insets.top
+        )
         var maxY = insets.top
         var showShowMoreButton = false
+
+        avatarFrame = CGRect(
+            origin: avatarContainerFrameStart,
+            size: Self.avatarSize
+        )
+
+        let usernameTextHeight = (config.username.font()?.lineHeight ?? .zero)
+        usernameFrame = CGRect(
+            origin: reviewContainerFrameStart,
+            size: config.username.boundingRect(width: width, height: usernameTextHeight).size
+        )
+
+        maxY += usernameToRatingSpacing + usernameTextHeight
+
+        ratingFrame = CGRect(origin:
+                                CGPoint(
+                                    x: reviewContainerFrameStart.x,
+                                    y: maxY),
+                             size: config.ratingImage.size
+        )
+        //TODO: при добавлении фото, исправить отступы 
+        maxY += config.ratingImage.size.height + ratingToTextSpacing
 
         if !config.reviewText.isEmpty() {
             // Высота текста с текущим ограничением по количеству строк.
@@ -171,7 +234,7 @@ private final class ReviewCellLayout {
             showShowMoreButton = config.maxLines != .zero && actualTextHeight > currentTextHeight
 
             reviewTextLabelFrame = CGRect(
-                origin: CGPoint(x: insets.left, y: maxY),
+                origin: CGPoint(x: reviewContainerFrameStart.x, y: maxY),
                 size: config.reviewText.boundingRect(width: width, height: currentTextHeight).size
             )
             maxY = reviewTextLabelFrame.maxY + reviewTextToCreatedSpacing
@@ -179,7 +242,7 @@ private final class ReviewCellLayout {
 
         if showShowMoreButton {
             showMoreButtonFrame = CGRect(
-                origin: CGPoint(x: insets.left, y: maxY),
+                origin: CGPoint(x: reviewContainerFrameStart.x, y: maxY),
                 size: Self.showMoreButtonSize
             )
             maxY = showMoreButtonFrame.maxY + showMoreToCreatedSpacing
@@ -188,13 +251,12 @@ private final class ReviewCellLayout {
         }
 
         createdLabelFrame = CGRect(
-            origin: CGPoint(x: insets.left, y: maxY),
+            origin: CGPoint(x: reviewContainerFrameStart.x, y: maxY),
             size: config.created.boundingRect(width: width).size
         )
 
         return createdLabelFrame.maxY + insets.bottom
     }
-
 }
 
 // MARK: - Typealias
