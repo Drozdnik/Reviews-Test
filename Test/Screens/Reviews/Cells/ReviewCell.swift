@@ -125,6 +125,11 @@ private extension ReviewCell {
         contentView.addSubview(showMoreButton)
         showMoreButton.contentVerticalAlignment = .fill
         showMoreButton.setAttributedTitle(Config.showMoreText, for: .normal)
+        showMoreButton.addAction(UIAction { [weak self] _ in
+            guard let self = self, let config = self.config else { return }
+
+            config.onTapShowMore(config.id)
+        }, for: .touchUpInside)
     }
 
     func setupAvatarImageView() {

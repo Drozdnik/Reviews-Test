@@ -8,7 +8,7 @@ enum CellUpdateType {
 final class ReviewsViewModel: NSObject {
 
     /// Замыкание, вызываемое при изменении `state`.
-    var onStateChange: ((State, CellUpdateType) -> Void)?
+    var onStateChange: ((CellUpdateType) -> Void)?
 
     private var state: State
     private let reviewsProvider: ReviewsProvider
@@ -71,7 +71,7 @@ extension ReviewsViewModel {
                     newIndexPaths.append(summaryIndexPath)
                 }
 
-                onStateChange?(state, .insertRows(newIndexPaths))
+                onStateChange?(.insertRows(newIndexPaths))
             }
         } catch {
             state.shouldLoad = true
@@ -93,6 +93,7 @@ private extension ReviewsViewModel {
         else { return }
         item.maxLines = .zero
         state.items[index] = item
+        onStateChange?(.reloadRow(IndexPath(row: index, section: 0)))
         //TODO: показать полностью
     }
 
