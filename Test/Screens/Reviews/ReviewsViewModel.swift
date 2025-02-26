@@ -13,7 +13,6 @@ final class ReviewsViewModel: NSObject {
     private var state: State
     private let reviewsProvider: ReviewsProvider
     private let ratingRenderer: RatingRenderer
-    private var totalCount: Int?
     private var isCountShown = false
     private let decoder: JSONDecoder
 
@@ -44,29 +43,41 @@ extension ReviewsViewModel {
         do {
             let data = try await reviewsProvider.getReviews(offset: state.offset)
             let reviews = try decoder.decode(Reviews.self, from: data)
-            totalCount = reviews.count
+            let totalCount = reviews.count
+            let newReviewItems = reviews.items.map(makeReviewItem)
+
             await MainActor.run {
                 let start = state.items.count
-                state.items += reviews.items.map(makeReviewItem)
+                if state.items.count + newReviewItems.count > totalCount {
+                    let countToAdd = totalCount - state.items.count
+                    state.items += newReviewItems.prefix(countToAdd).map { $0 as any TableCellConfig }
+                } else {
+                    state.items += newReviewItems
+                }
+
                 state.offset += state.limit
-                state.shouldLoad = state.offset < reviews.count
+
+                if state.items.count >= totalCount {
+                    state.shouldLoad = false
+                } else {
+                    state.shouldLoad = true
+                }
+
                 isCountShown = !state.shouldLoad
 
                 var newIndexPaths = (start..<state.items.count).map { IndexPath(row: $0, section: 0) }
-
-                if  isCountShown {
+                if isCountShown {
                     let summaryIndexPath = IndexPath(row: state.items.count, section: 0)
                     newIndexPaths.append(summaryIndexPath)
                 }
 
                 onStateChange?(state, .insertRows(newIndexPaths))
-
             }
-        }
-        catch {
+        } catch {
             state.shouldLoad = true
         }
     }
+
 
 }
 
@@ -117,7 +128,6 @@ private extension ReviewsViewModel {
 extension ReviewsViewModel: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
         if !isCountShown {
             return state.items.count
         } else {
@@ -133,7 +143,7 @@ extension ReviewsViewModel: UITableViewDataSource {
             config.update(cell: cell)
             return cell
         } else {
-            let summaryConfig = ReviewCountCellConfig(totalCount: totalCount)
+            let summaryConfig = ReviewCountCellConfig(totalCount: state.items.count)
             let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCountCellConfig.reuseId, for: indexPath)
             summaryConfig.update(cell: cell)
             return cell
