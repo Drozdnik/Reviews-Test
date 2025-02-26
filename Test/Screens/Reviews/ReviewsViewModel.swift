@@ -13,6 +13,7 @@ final class ReviewsViewModel: NSObject {
     private var state: State
     private let reviewsProvider: ReviewsProvider
     private let ratingRenderer: RatingRenderer
+    private var isCountShown = false
     private let decoder: JSONDecoder
 
     init(
@@ -42,27 +43,47 @@ extension ReviewsViewModel {
         do {
             let data = try await reviewsProvider.getReviews(offset: state.offset)
             let reviews = try decoder.decode(Reviews.self, from: data)
-            let start = state.items.count
-            state.items += reviews.items.map(makeReviewItem)
-            state.offset += state.limit
-            state.shouldLoad = state.offset < reviews.count
+            let totalCount = reviews.count
+            let newReviewItems = reviews.items.map(makeReviewItem)
 
-            let newIndexPaths = (start..<state.items.count).map { IndexPath(row: $0, section: 0) }
             await MainActor.run {
+                let start = state.items.count
+                if state.items.count + newReviewItems.count > totalCount {
+                    let countToAdd = totalCount - state.items.count
+                    state.items += newReviewItems.prefix(countToAdd).map { $0 as any TableCellConfig }
+                } else {
+                    state.items += newReviewItems
+                }
+
+                state.offset += state.limit
+
+                if state.items.count >= totalCount {
+                    state.shouldLoad = false
+                } else {
+                    state.shouldLoad = true
+                }
+
+                isCountShown = !state.shouldLoad
+
+                var newIndexPaths = (start..<state.items.count).map { IndexPath(row: $0, section: 0) }
+                if isCountShown {
+                    let summaryIndexPath = IndexPath(row: state.items.count, section: 0)
+                    newIndexPaths.append(summaryIndexPath)
+                }
+
                 onStateChange?(state, .insertRows(newIndexPaths))
             }
-        }
-        catch {
+        } catch {
             state.shouldLoad = true
         }
     }
+
 
 }
 
 // MARK: - Private
 
 private extension ReviewsViewModel {
-
     /// Метод, вызываемый при нажатии на кнопку "Показать полностью...".
     /// Снимает ограничение на количество строк текста отзыва (раскрывает текст).
     func showMoreReview(with id: UUID) {
@@ -107,14 +128,26 @@ private extension ReviewsViewModel {
 extension ReviewsViewModel: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        state.items.count
+        if !isCountShown {
+            return state.items.count
+        } else {
+            return state.items.count + 1
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let config = state.items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: config.reuseId, for: indexPath)
-        config.update(cell: cell)
-        return cell
+        let isSummaryRow = (isCountShown && indexPath.row == state.items.count)
+        if !isSummaryRow {
+            let config = state.items[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: config.reuseId, for: indexPath)
+            config.update(cell: cell)
+            return cell
+        } else {
+            let summaryConfig = ReviewCountCellConfig(totalCount: state.items.count)
+            let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCountCellConfig.reuseId, for: indexPath)
+            summaryConfig.update(cell: cell)
+            return cell
+        }
     }
 
 }
@@ -124,7 +157,13 @@ extension ReviewsViewModel: UITableViewDataSource {
 extension ReviewsViewModel: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        state.items[indexPath.row].height(with: tableView.bounds.size)
+        let isSummaryRow = (isCountShown && indexPath.row == state.items.count)
+        if !isSummaryRow {
+            return state.items[indexPath.row].height(with: tableView.bounds.size)
+        } else {
+            let summaryConfig = ReviewCountCellConfig(totalCount: state.items.count)
+            return summaryConfig.height(with: tableView.bounds.size)
+        }
     }
 
     /// Метод дозапрашивает отзывы, если до конца списка отзывов осталось два с половиной экрана по высоте.
@@ -135,7 +174,7 @@ extension ReviewsViewModel: UITableViewDelegate {
     ) {
         if shouldLoadNextPage(scrollView: scrollView, targetOffsetY: targetContentOffset.pointee.y) {
             Task {
-               await getReviews()
+                await getReviews()
             }
         }
     }
