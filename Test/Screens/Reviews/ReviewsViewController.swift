@@ -22,8 +22,10 @@ final class ReviewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewModel()
+        startLoading()
         Task {
            await viewModel.getReviews()
+            endLoading()
         }
     }
 }
@@ -54,5 +56,13 @@ private extension ReviewsViewController {
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
         }
+    }
+
+    func startLoading() {
+        reviewsView.loader.startAnimating()
+    }
+
+    func endLoading() {
+        reviewsView.loader.stopAnimating()
     }
 }

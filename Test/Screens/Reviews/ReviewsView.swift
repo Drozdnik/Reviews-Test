@@ -3,6 +3,7 @@ import UIKit
 final class ReviewsView: UIView {
 
     let tableView = UITableView()
+    let loader = UIActivityIndicatorView()
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -16,6 +17,7 @@ final class ReviewsView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         tableView.frame = bounds.inset(by: safeAreaInsets)
+        loader.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
 
 }
@@ -27,6 +29,7 @@ private extension ReviewsView {
     func setupView() {
         backgroundColor = .systemBackground
         setupTableView()
+        setupLoader()
     }
 
     func setupTableView() {
@@ -37,4 +40,7 @@ private extension ReviewsView {
         tableView.register(ReviewCountCell.self, forCellReuseIdentifier: ReviewCountCellConfig.reuseId)
     }
 
+    func setupLoader() {
+        addSubview(loader)
+    }
 }
