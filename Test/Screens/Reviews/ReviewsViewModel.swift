@@ -48,7 +48,6 @@ extension ReviewsViewModel {
             let reviews = try decoder.decode(Reviews.self, from: data)
             let totalCount = reviews.count
             let newReviewItems = await reviews.items.asyncMap(makeReviewItem)
-            let start = state.items.count
             state.offset += state.limit
             state.shouldLoad = state.offset < reviews.count
 
