@@ -1,3 +1,4 @@
+import Foundation
 /// Модель отзыва.
 struct Review: Decodable {
     private enum CodingKeys: String, CodingKey {
@@ -6,6 +7,7 @@ struct Review: Decodable {
         case rating
         case text
         case created
+        case avatarUrl = "avatar_url"
     }
     
     /// Текст отзыва.
@@ -13,6 +15,7 @@ struct Review: Decodable {
     /// Время создания отзыва.
     let created: String
     let rating: Int
+    let avatarUrl: URL?
     var username: String {
         "\(firstName) \(lastName)"
     }
