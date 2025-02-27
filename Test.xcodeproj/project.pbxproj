@@ -29,8 +29,10 @@
 		21ED1F652D69D0340012D6F6 /* ReviewsScreenFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ED1F642D69D0340012D6F6 /* ReviewsScreenFactory.swift */; };
 		87D4D8132D706C8F00109C4B /* AvatarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8122D706C8F00109C4B /* AvatarService.swift */; };
 		87D4D8152D70792900109C4B /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8142D70792900109C4B /* Sequence.swift */; };
-		87D4D8182D70821C00109C4B /* ReviewCountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8162D70821C00109C4B /* ReviewCountCell.swift */; };
-		87D4D8192D70821C00109C4B /* ReviewCountCellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8172D70821C00109C4B /* ReviewCountCellConfig.swift */; };
+		87D4D8182D70821C00109C4B /* (null) in Sources */ = {isa = PBXBuildFile; };
+		87D4D8192D70821C00109C4B /* (null) in Sources */ = {isa = PBXBuildFile; };
+		87D4D81F2D70D5E300109C4B /* ReviewCountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D81D2D70D5E300109C4B /* ReviewCountCell.swift */; };
+		87D4D8202D70D5E300109C4B /* ReviewCountCellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,8 +59,8 @@
 		21ED1F642D69D0340012D6F6 /* ReviewsScreenFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsScreenFactory.swift; sourceTree = "<group>"; };
 		87D4D8122D706C8F00109C4B /* AvatarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarService.swift; sourceTree = "<group>"; };
 		87D4D8142D70792900109C4B /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
-		87D4D8162D70821C00109C4B /* ReviewCountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCell.swift; sourceTree = "<group>"; };
-		87D4D8172D70821C00109C4B /* ReviewCountCellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCellConfig.swift; sourceTree = "<group>"; };
+		87D4D81D2D70D5E300109C4B /* ReviewCountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCell.swift; sourceTree = "<group>"; };
+		87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCellConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,8 +94,8 @@
 		216668752D48F39E009AAA76 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				87D4D8162D70821C00109C4B /* ReviewCountCell.swift */,
-				87D4D8172D70821C00109C4B /* ReviewCountCellConfig.swift */,
+				87D4D81D2D70D5E300109C4B /* ReviewCountCell.swift */,
+				87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */,
 				21B82E252D47B0640085DAA2 /* ReviewCell.swift */,
 			);
 			path = Cells;
@@ -282,6 +284,8 @@
 			files = (
 				21B82E392D47B1320085DAA2 /* Review.swift in Sources */,
 				21B8416D2D47C0E20085DAA2 /* ReviewsViewModelState.swift in Sources */,
+				87D4D81F2D70D5E300109C4B /* ReviewCountCell.swift in Sources */,
+				87D4D8202D70D5E300109C4B /* ReviewCountCellConfig.swift in Sources */,
 				21B82E2E2D47B0640085DAA2 /* ReviewCell.swift in Sources */,
 				21ED1F622D69CBCD0012D6F6 /* RootView.swift in Sources */,
 				21667B802D4A25B2009AAA76 /* RatingRenderer.swift in Sources */,
@@ -293,8 +297,8 @@
 				87D4D8132D706C8F00109C4B /* AvatarService.swift in Sources */,
 				21B82E302D47B0640085DAA2 /* ReviewsViewController.swift in Sources */,
 				2166A0F42D4A5B25009AAA76 /* ReviewsView.swift in Sources */,
-				87D4D8182D70821C00109C4B /* ReviewCountCell.swift in Sources */,
-				87D4D8192D70821C00109C4B /* ReviewCountCellConfig.swift in Sources */,
+				87D4D8182D70821C00109C4B /* (null) in Sources */,
+				87D4D8192D70821C00109C4B /* (null) in Sources */,
 				216668732D48E89A009AAA76 /* Colors.swift in Sources */,
 				21B841712D47C5F00085DAA2 /* TableCellConfig.swift in Sources */,
 				21ED1F652D69D0340012D6F6 /* ReviewsScreenFactory.swift in Sources */,
