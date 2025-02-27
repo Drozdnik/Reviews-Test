@@ -15,16 +15,19 @@ final class ReviewsViewModel: NSObject {
     private let ratingRenderer: RatingRenderer
     private var isCountShown = false
     private let decoder: JSONDecoder
+    private let avatarService: AvatarService
 
     init(
         state: State = State(),
         reviewsProvider: ReviewsProvider = ReviewsProvider(),
         ratingRenderer: RatingRenderer = RatingRenderer(),
+        avatarService: AvatarService,
         decoder: JSONDecoder = JSONDecoder()
     ) {
         self.state = state
         self.reviewsProvider = reviewsProvider
         self.ratingRenderer = ratingRenderer
+        self.avatarService = avatarService
         self.decoder = decoder
     }
 
@@ -44,7 +47,10 @@ extension ReviewsViewModel {
             let data = try await reviewsProvider.getReviews(offset: state.offset)
             let reviews = try decoder.decode(Reviews.self, from: data)
             let totalCount = reviews.count
-            let newReviewItems = reviews.items.map(makeReviewItem)
+            let newReviewItems = await reviews.items.asyncMap(makeReviewItem)
+            let start = state.items.count
+            state.offset += state.limit
+            state.shouldLoad = state.offset < reviews.count
 
             await MainActor.run {
                 let start = state.items.count
@@ -105,12 +111,19 @@ private extension ReviewsViewModel {
 
     typealias ReviewItem = ReviewCellConfig
 
-    func makeReviewItem(_ review: Review) -> ReviewItem {
+    func makeReviewItem(_ review: Review) async -> ReviewItem {
         let reviewText = review.text.attributed(font: .text)
         let created = review.created.attributed(font: .created, color: .created)
         let username = review.username.attributed(font: .username)
         let ratingImage = ratingRenderer.ratingImage(review.rating)
-        let avatarImage = UIImage(named: avatarImageName) ?? UIImage(systemName: mockAvatarImageName)!
+        let avatarImage: UIImage
+
+        if let url = review.avatarUrl {
+            avatarImage = await avatarService.fetchAvatar(from: url)
+        } else {
+            avatarImage = avatarService.defaultImage
+        }
+
         let item = ReviewItem(
             username: username,
             reviewText: reviewText,
@@ -193,5 +206,3 @@ extension ReviewsViewModel: UITableViewDelegate {
     }
 }
 
-private let avatarImageName = "mockAvatar"
-private let mockAvatarImageName = "person.circle.fill"
