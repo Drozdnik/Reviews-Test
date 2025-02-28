@@ -16,18 +16,21 @@ final class ReviewsViewModel: NSObject {
     private var isCountShown = false
     private let decoder: JSONDecoder
     private let avatarService: AvatarService
+    private let imageService: ImageService
 
     init(
         state: State = State(),
         reviewsProvider: ReviewsProvider = ReviewsProvider(),
         ratingRenderer: RatingRenderer = RatingRenderer(),
         avatarService: AvatarService,
+        imageService: ImageService,
         decoder: JSONDecoder = JSONDecoder()
     ) {
         self.state = state
         self.reviewsProvider = reviewsProvider
         self.ratingRenderer = ratingRenderer
         self.avatarService = avatarService
+        self.imageService = imageService
         self.decoder = decoder
     }
 
@@ -115,13 +118,8 @@ private extension ReviewsViewModel {
         let created = review.created.attributed(font: .created, color: .created)
         let username = review.username.attributed(font: .username)
         let ratingImage = ratingRenderer.ratingImage(review.rating)
-        let avatarImage: UIImage
-
-        if let url = review.avatarUrl {
-            avatarImage = await avatarService.fetchAvatar(from: url)
-        } else {
-            avatarImage = avatarService.defaultImage
-        }
+        let avatarImage = await avatarService.fetchAvatar(from: review.avatarUrl)
+        let images = await imageService.fetchImages(urls: review.imagesUrl)
 
         let item = ReviewItem(
             username: username,
@@ -129,6 +127,7 @@ private extension ReviewsViewModel {
             created: created,
             ratingImage: ratingImage,
             avatarImage: avatarImage,
+            images: images,
             onTapShowMore: { [weak self] id in
                 guard let self else { return }
                 showMoreReview(with: id)
@@ -136,7 +135,6 @@ private extension ReviewsViewModel {
         )
         return item
     }
-
 }
 
 // MARK: - UITableViewDataSource

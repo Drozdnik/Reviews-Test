@@ -17,6 +17,7 @@ struct ReviewCellConfig {
     let created: NSAttributedString
     let ratingImage: UIImage
     let avatarImage: UIImage
+    let images: [UIImage]
     /// Замыкание, вызываемое при нажатии на кнопку "Показать полностью...".
     let onTapShowMore: (UUID) -> Void
 
@@ -43,6 +44,8 @@ extension ReviewCellConfig: TableCellConfig {
         cell.reviewTextLabel.attributedText = reviewText
         cell.reviewTextLabel.numberOfLines = maxLines
         cell.createdLabel.attributedText = created
+        cell.images = images
+        cell.updateImagesStackView()
         cell.config = self
     }
 
@@ -76,6 +79,8 @@ final class ReviewCell: UITableViewCell {
     fileprivate let avatarImageView = UIImageView()
     fileprivate let ratingImageView = UIImageView()
     fileprivate let usernameLabel = UILabel()
+    fileprivate var images: [UIImage] = []
+    fileprivate let imagesStackView = UIStackView()
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -95,6 +100,9 @@ final class ReviewCell: UITableViewCell {
         reviewTextLabel.frame = layout.reviewTextLabelFrame
         createdLabel.frame = layout.createdLabelFrame
         showMoreButton.frame = layout.showMoreButtonFrame
+
+        let hasImages = !images.isEmpty
+        imagesStackView.frame = hasImages ? layout.imagesStackView : .zero
     }
 
 }
@@ -110,6 +118,7 @@ private extension ReviewCell {
         setupShowMoreButton()
         setupAvatarImageView()
         setupRatingImageView()
+        setupImagesStackView()
     }
 
     func setupReviewTextLabel() {
@@ -147,6 +156,35 @@ private extension ReviewCell {
     func setupUsername() {
         contentView.addSubview(usernameLabel)
     }
+
+    func setupImagesStackView() {
+        contentView.addSubview(imagesStackView)
+        imagesStackView.axis = .horizontal
+        imagesStackView.spacing = Layout.photosSpacing
+    }
+
+    func updateImagesStackView() {
+        imagesStackView.arrangedSubviews.forEach{ $0.removeFromSuperview() }
+
+        guard !images.isEmpty else {
+            imagesStackView.isHidden = true
+            return
+        }
+
+        imagesStackView.isHidden = false
+        images.forEach { image in
+            let imageView = UIImageView(image: image)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                imageView.widthAnchor.constraint(equalToConstant: Layout.photoSize.width),
+                imageView.heightAnchor.constraint(equalToConstant: Layout.photoSize.height)
+            ])
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = Layout.photoCornerRadius
+            imagesStackView.addArrangedSubview(imageView)
+        }
+    }
 }
 
 // MARK: - Layout
@@ -161,8 +199,11 @@ private final class ReviewCellLayout {
     fileprivate static let avatarCornerRadius = 18.0
     fileprivate static let photoCornerRadius = 8.0
 
-    private static let photoSize = CGSize(width: 55.0, height: 66.0)
+    fileprivate static let photoSize = CGSize(width: 55.0, height: 66.0)
     private static let showMoreButtonSize = Config.showMoreText.size()
+
+    /// Горизонтальные отступы между фото.
+    fileprivate static let photosSpacing = 8.0
 
     // MARK: - Фреймы
 
@@ -172,6 +213,7 @@ private final class ReviewCellLayout {
     private(set) var avatarFrame = CGRect.zero
     private(set) var ratingFrame = CGRect.zero
     private(set) var usernameFrame = CGRect.zero
+    private(set) var imagesStackView = CGRect.zero
 
     // MARK: - Отступы
 
@@ -186,8 +228,6 @@ private final class ReviewCellLayout {
     private let ratingToTextSpacing = 6.0
     /// Вертикальный отступ от вью рейтинга до фото.
     private let ratingToPhotosSpacing = 10.0
-    /// Горизонтальные отступы между фото.
-    private let photosSpacing = 8.0
     /// Вертикальный отступ от фото (если они есть) до текста отзыва.
     private let photosToTextSpacing = 10.0
     /// Вертикальный отступ от текста отзыва до времени создания отзыва или кнопки "Показать полностью..." (если она есть).
@@ -228,8 +268,21 @@ private final class ReviewCellLayout {
                                     y: maxY),
                              size: config.ratingImage.size
         )
-        //TODO: при добавлении фото, исправить отступы 
-        maxY += config.ratingImage.size.height + ratingToTextSpacing
+
+        if !config.images.isEmpty {
+            let stackWidth = CGFloat(config.images.count) * Self.photoSize.width + CGFloat(config.images.count - 1) * Self.photosSpacing
+            maxY += config.ratingImage.size.height + ratingToPhotosSpacing
+            imagesStackView = CGRect(
+                x: reviewContainerFrameStart.x,
+                y: maxY,
+                width: stackWidth,
+                height: Self.photoSize.height
+            )
+
+            maxY +=  Self.photoSize.height + photosToTextSpacing
+        } else {
+            maxY += config.ratingImage.size.height + ratingToTextSpacing
+        }
 
         if !config.reviewText.isEmpty() {
             // Высота текста с текущим ограничением по количеству строк.

@@ -33,6 +33,8 @@
 		87D4D8192D70821C00109C4B /* (null) in Sources */ = {isa = PBXBuildFile; };
 		87D4D81F2D70D5E300109C4B /* ReviewCountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D81D2D70D5E300109C4B /* ReviewCountCell.swift */; };
 		87D4D8202D70D5E300109C4B /* ReviewCountCellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */; };
+		87D4D82F2D71F7EA00109C4B /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D82E2D71F7EA00109C4B /* ImageService.swift */; };
+		87D4D8312D71F87500109C4B /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8302D71F87500109C4B /* NetworkingService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		87D4D8142D70792900109C4B /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		87D4D81D2D70D5E300109C4B /* ReviewCountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCell.swift; sourceTree = "<group>"; };
 		87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCellConfig.swift; sourceTree = "<group>"; };
+		87D4D82E2D71F7EA00109C4B /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		87D4D8302D71F87500109C4B /* NetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +209,8 @@
 			isa = PBXGroup;
 			children = (
 				87D4D8122D706C8F00109C4B /* AvatarService.swift */,
+				87D4D82E2D71F7EA00109C4B /* ImageService.swift */,
+				87D4D8302D71F87500109C4B /* NetworkingService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -293,6 +299,7 @@
 				21B82E362D47B0D80085DAA2 /* ReviewsProvider.swift in Sources */,
 				21ED1F602D69C85E0012D6F6 /* RootViewController.swift in Sources */,
 				21B82E342D47B0AA0085DAA2 /* ReviewsViewModel.swift in Sources */,
+				87D4D8312D71F87500109C4B /* NetworkingService.swift in Sources */,
 				21B8416B2D47BFA10085DAA2 /* Reviews.swift in Sources */,
 				87D4D8132D706C8F00109C4B /* AvatarService.swift in Sources */,
 				21B82E302D47B0640085DAA2 /* ReviewsViewController.swift in Sources */,
@@ -305,6 +312,7 @@
 				2166686F2D48E23F009AAA76 /* Fonts.swift in Sources */,
 				21B82E312D47B0640085DAA2 /* AppDelegate.swift in Sources */,
 				87D4D8152D70792900109C4B /* Sequence.swift in Sources */,
+				87D4D82F2D71F7EA00109C4B /* ImageService.swift in Sources */,
 				21B8416F2D47C4C60085DAA2 /* String+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
