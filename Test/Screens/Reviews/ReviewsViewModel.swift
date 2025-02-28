@@ -54,7 +54,8 @@ extension ReviewsViewModel {
             state.offset += state.limit
             state.shouldLoad = state.offset < reviews.count
 
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 let start = state.items.count
                 if state.items.count + newReviewItems.count > totalCount {
                     let countToAdd = totalCount - state.items.count
@@ -187,7 +188,8 @@ extension ReviewsViewModel: UITableViewDelegate {
         targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
         if shouldLoadNextPage(scrollView: scrollView, targetOffsetY: targetContentOffset.pointee.y) {
-            Task {
+            Task { [weak self] in
+                guard let self else { return }
                 await getReviews()
             }
         }

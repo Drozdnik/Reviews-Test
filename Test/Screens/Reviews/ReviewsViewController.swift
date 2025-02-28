@@ -24,7 +24,8 @@ final class ReviewsViewController: UIViewController {
         setupViewModel()
         startLoading()
         setupRefreshcontrol()
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
            await viewModel.getReviews()
             endLoading()
         }
@@ -73,10 +74,12 @@ private extension ReviewsViewController {
 
     @objc
     func didPullToRefresh() {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             await viewModel.getReviews()
 
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 reviewsView.tableView.refreshControl?.endRefreshing()
             }
         }
