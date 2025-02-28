@@ -8,6 +8,7 @@ struct Review: Decodable {
         case text
         case created
         case avatarUrl = "avatar_url"
+        case imagesUrl = "images_url"
     }
     
     /// Текст отзыва.
@@ -16,6 +17,7 @@ struct Review: Decodable {
     let created: String
     let rating: Int
     let avatarUrl: URL?
+    let imagesUrl: [URL?]?
     var username: String {
         "\(firstName) \(lastName)"
     }

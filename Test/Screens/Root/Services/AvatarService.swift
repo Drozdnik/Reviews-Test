@@ -1,32 +1,22 @@
 import UIKit
 
 protocol AvatarService {
-    func fetchAvatar(from url: URL) async -> UIImage
-    var defaultImage: UIImage { get }
+    func fetchAvatar(from url: URL?) async -> UIImage
 }
 
 final class AvatarServiceImpl: AvatarService {
-    private var cache: [String: UIImage] = [:]
-    let defaultImage: UIImage =  UIImage(named: avatarImageName) ?? UIImage(systemName: mockAvatarImageName)!
+    private let networkingService: NetworkingService = NetworkingServiceImpl()
+    private let defaultImage: UIImage =  UIImage(named: avatarImageName) ?? UIImage(systemName: mockAvatarImageName)!
 
-    func fetchAvatar(from url: URL) async -> UIImage {
-        let key = url.absoluteString
+    func fetchAvatar(from url: URL?) async -> UIImage {
+        guard let url else { return defaultImage }
 
-        if let cached = cache[key] {
-            return cached
+        let avatarImage = await networkingService.fetchImage(urls: [url])
+        if let avatar = avatarImage.first {
+            return avatar ?? defaultImage
+        } else {
+            return defaultImage
         }
-
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let image = UIImage(data: data) {
-                cache[key] = image
-                return image
-            }
-        } catch {
-            assertionFailure("Не удалось запросить изображение по url: \(url)")
-        }
-        
-        return defaultImage
     }
 }
 

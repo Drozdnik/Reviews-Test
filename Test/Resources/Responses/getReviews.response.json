@@ -7,7 +7,10 @@
             "rating": 5,
             "text": "Кроссовки хорошие. Удобные. Как по мне сшиты.",
             "created": "1 час назад",
-            "avatar_url": "https://images.techinsider.ru/upload/img_cache/b76/b76137ebad1c1cee0359a993137c28a7_cropped_510x491.webp"
+            "avatar_url": "https://images.techinsider.ru/upload/img_cache/b76/b76137ebad1c1cee0359a993137c28a7_cropped_510x491.webp",
+            "images_url": [
+                "https://sun9-63.userapi.com/s/v1/if2/VLl7IPHRGKTRJg503tbGIDAzbjKn3H3Wv5Kijtq_dHg2Lo_scg-kB0hssZmH9JyCI4amfPT1wWeET7Pv4xfndL3q.jpg?quality=96&as=32x25,48x38,72x57,108x85,160x126,240x189,360x283,480x378,540x425,640x504,720x567,1080x850,1181x930&from=bu&u=2uWsLP6Z9ZDpEM01M2Ss4zSZdbvKgiBCiYFVo1MIufI&cs=807x635",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxJNrnK9nth_CtOBMmFvKNl3lKDSWYkfhGFA&s"]
         },
         {
             "first_name": "Екатерина",
@@ -15,14 +18,25 @@
             "rating": 3,
             "text": "Скользские ужасно.",
             "created": "12 минут назад",
-            "avatar_url": "https://vethelp72.ru/wp-content/uploads/2022/09/МКБ-у-кота-1-e1662901029618.jpg"
+            "avatar_url": "https://vethelp72.ru/wp-content/uploads/2022/09/МКБ-у-кота-1-e1662901029618.jpg",
+            "images_url": [
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRnBgGsrkNTUt3I61_NI98H8b3pqZ5u-gsNA&s",
+                "https://i.otzovik.com/objects/b/2330000/2323517.png",
+                "https://enigma-project.ru/wp-content/uploads/2016/02/upastj-v-gryazj-1.jpg",
+                "https://www.nevworker.ru/upload/iblock/8fe/8fe49c7e4eb853f8b401c005e61f6314.jpg",
+                "https://s1.bloknot-rostov.ru/thumb/850x0xcut/upload/iblock/e23/ut0.jpg"
+
+            ]
         },
         {
             "first_name": "Евгения",
             "last_name": "Петрова",
             "rating": 4,
             "text": "Прошла по снегу 30 метров, 5 раз упала. Спасибо мужу, поддерживал. Возврат, к сожалению.",
-            "created": "35 минут назад"
+            "created": "35 минут назад",
+            "images_url": [
+                "https://img.freepik.com/free-photo/woman-lying-snow_181624-25971.jpg"
+            ]
         },
         {
             "first_name": "Илья",
@@ -158,6 +172,6 @@
             "rating": 2,
             "text": "",
             "created": "вчера в 12:39"
-        },
+        }
     ]
 }
