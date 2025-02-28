@@ -4,6 +4,7 @@ final class ReviewsView: UIView {
 
     let tableView = UITableView()
     let loader = UIActivityIndicatorView()
+    let refreshControl = UIRefreshControl()
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -30,6 +31,7 @@ private extension ReviewsView {
         backgroundColor = .systemBackground
         setupTableView()
         setupLoader()
+        setupRefreshControl()
     }
 
     func setupTableView() {
@@ -42,5 +44,9 @@ private extension ReviewsView {
 
     func setupLoader() {
         addSubview(loader)
+    }
+
+    func setupRefreshControl() {
+        tableView.refreshControl = refreshControl
     }
 }

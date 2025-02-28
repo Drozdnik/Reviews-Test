@@ -23,6 +23,7 @@ final class ReviewsViewController: UIViewController {
         super.viewDidLoad()
         setupViewModel()
         startLoading()
+        setupRefreshcontrol()
         Task {
            await viewModel.getReviews()
             endLoading()
@@ -64,5 +65,20 @@ private extension ReviewsViewController {
 
     func endLoading() {
         reviewsView.loader.stopAnimating()
+    }
+
+    func setupRefreshcontrol() {
+        reviewsView.refreshControl.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+    }
+
+    @objc
+    func didPullToRefresh() {
+        Task {
+            await viewModel.getReviews()
+
+            await MainActor.run {
+                reviewsView.tableView.refreshControl?.endRefreshing()
+            }
+        }
     }
 }
