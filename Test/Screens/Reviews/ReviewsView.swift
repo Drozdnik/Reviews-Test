@@ -3,7 +3,7 @@ import UIKit
 final class ReviewsView: UIView {
 
     let tableView = UITableView()
-    let loader = UIActivityIndicatorView()
+    let loader = CustomActivityIndicator()
     let refreshControl = UIRefreshControl()
 
     required init?(coder: NSCoder) {
@@ -18,7 +18,8 @@ final class ReviewsView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         tableView.frame = bounds.inset(by: safeAreaInsets)
-        loader.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        loader.frame = CGRect(x: 0, y: 0, width: loaderSize, height: loaderSize)
+        loader.position = self.center
     }
 
 }
@@ -43,10 +44,12 @@ private extension ReviewsView {
     }
 
     func setupLoader() {
-        addSubview(loader)
+        self.layer.addSublayer(loader)
     }
 
     func setupRefreshControl() {
         tableView.refreshControl = refreshControl
     }
 }
+
+private let loaderSize = CGFloat(50)

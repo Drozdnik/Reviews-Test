@@ -35,6 +35,7 @@
 		87D4D8202D70D5E300109C4B /* ReviewCountCellConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */; };
 		87D4D82F2D71F7EA00109C4B /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D82E2D71F7EA00109C4B /* ImageService.swift */; };
 		87D4D8312D71F87500109C4B /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8302D71F87500109C4B /* NetworkingService.swift */; };
+		87D4D8332D7465DD00109C4B /* CustomActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D4D8322D7465DD00109C4B /* CustomActivityIndicator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,7 @@
 		87D4D81E2D70D5E300109C4B /* ReviewCountCellConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCountCellConfig.swift; sourceTree = "<group>"; };
 		87D4D82E2D71F7EA00109C4B /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		87D4D8302D71F87500109C4B /* NetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
+		87D4D8322D7465DD00109C4B /* CustomActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,7 +174,6 @@
 				21B8416C2D47C0E20085DAA2 /* ReviewsViewModelState.swift */,
 				21B82E332D47B0AA0085DAA2 /* ReviewsViewModel.swift */,
 				21B82E352D47B0D80085DAA2 /* ReviewsProvider.swift */,
-				21667B7F2D4A25B2009AAA76 /* RatingRenderer.swift */,
 				216668752D48F39E009AAA76 /* Cells */,
 			);
 			path = Reviews;
@@ -201,6 +202,7 @@
 				87D4D8112D706C7E00109C4B /* Services */,
 				21ED1F5F2D69C85E0012D6F6 /* RootViewController.swift */,
 				21ED1F612D69CBCD0012D6F6 /* RootView.swift */,
+				87D4D8322D7465DD00109C4B /* CustomActivityIndicator.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -208,6 +210,7 @@
 		87D4D8112D706C7E00109C4B /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				21667B7F2D4A25B2009AAA76 /* RatingRenderer.swift */,
 				87D4D8122D706C8F00109C4B /* AvatarService.swift */,
 				87D4D82E2D71F7EA00109C4B /* ImageService.swift */,
 				87D4D8302D71F87500109C4B /* NetworkingService.swift */,
@@ -293,6 +296,7 @@
 				87D4D81F2D70D5E300109C4B /* ReviewCountCell.swift in Sources */,
 				87D4D8202D70D5E300109C4B /* ReviewCountCellConfig.swift in Sources */,
 				21B82E2E2D47B0640085DAA2 /* ReviewCell.swift in Sources */,
+				87D4D8332D7465DD00109C4B /* CustomActivityIndicator.swift in Sources */,
 				21ED1F622D69CBCD0012D6F6 /* RootView.swift in Sources */,
 				21667B802D4A25B2009AAA76 /* RatingRenderer.swift in Sources */,
 				216668712D48E4B2009AAA76 /* NSAttributedString+Ext.swift in Sources */,
