@@ -13,6 +13,8 @@
 4) Добавил ячейку количества отзывов + **пофиксил показ отзывов**. Теперь количество показанных отзывов точно будет равно числу пришедшему в [json.](https://github.com/Drozdnik/Reviews-Test/pull/9)
 5) Были убраны [**memory leak**](https://github.com/Drozdnik/Reviews-Test/pull/15)
 6) Добавил к отзывам [фотографии](https://github.com/Drozdnik/Reviews-Test/pull/21)
+7) Добавил кастомный [ActivityIndicator](https://github.com/Drozdnik/Reviews-Test/pull/23)
+
 
    Итоговый результат
 <img width="488" alt="Screenshot 2025-02-28 at 23 09 28" src="https://github.com/user-attachments/assets/5424aa74-464c-497a-bc21-cdc968bda062" />
