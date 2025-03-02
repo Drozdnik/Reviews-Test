@@ -37,6 +37,7 @@ extension ReviewsProvider {
         // Симулируем сетевой запрос - не менять
         try await Task.sleep(nanoseconds: UInt64.random(in: 100_000_000...1_000_000_000))
 
+
         return try Data(contentsOf: url)
     }
 }
